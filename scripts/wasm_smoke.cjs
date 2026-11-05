@@ -46,6 +46,11 @@ const { chromium } = require('playwright-core');
         errors.push('Qt loaded, but the QML display was not revealed: ' + error.message);
       });
     }
+    // Qt creates the WebAssembly window asynchronously after onLoaded.
+    // Wait for the actual canvas rather than checking on the same event tick.
+    await page.waitForSelector('canvas', { state: 'attached', timeout: 15000 })
+      .catch(error => errors.push('Qt canvas never attached: ' + error.message));
+    await page.waitForTimeout(650);
     const viewportCheck = await page.evaluate(() => {
       const canvas = document.querySelector('canvas');
       const screen = document.querySelector('#screen');
