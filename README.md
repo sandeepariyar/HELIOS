@@ -3,6 +3,8 @@
 **Designed & Developed by Sandeep Pariyar**  
 **Qt 6 · QML · C++ · Optimized Embedded-Inspired UI**
 
+**Design origin:** Designed in Figma by Sandeep Pariyar, exported from Figma to HTML as a design reference, and implemented as a native Qt 6 application in QML and C++.
+
 HELIOS is a desktop energy-system cockpit and interactive portfolio simulator. The application presents an 800 × 480 embedded-inspired marine/residential energy interface with power-flow visualizations, battery monitoring, actuator controls, and an engineering diagnostics panel.
 
 > **Simulator, not a hardware controller.** PV generation, battery pack values, contactor states, CAN status, and safety functions are simulated. Weather and irradiance may be retrieved from Open-Meteo; those are external weather/model data, not measured electrical telemetry.
@@ -15,7 +17,7 @@ HELIOS is a desktop energy-system cockpit and interactive portfolio simulator. T
 - Interactive radial battery SOC control and simulated 16-cell pack visualization
 - Simulated bus isolation, reset, alarms, and event log
 - Optional audio feedback and real Open-Meteo weather / solar irradiance
-- MCU-oriented graphics: **pre-Qt palette reduction**, reusable assets, validated nine-slice backgrounds and native QML text
+- MCU-oriented graphics: **pre-Qt palette reduction**, reusable assets, validated nine-slice backgrounds and native QML text. The pre-Qt PNG optimization workflow has been tested by the author on MCU projects.
 - Developer metrics showing source-asset usage and explicitly labeled framebuffer estimates
 - Designed for **Qt 6 Community Edition**; no Qt for MCUs commercial license needed
 
@@ -37,16 +39,16 @@ src/         C++ backend and simulation logic
 qml/         Native QML screens, controls and DEV panel
 assets/      Reusable optimized PNG graphics
 sounds/      Original short WAV effects
-prototype/   HTML design reference
+prototype/   Figma-exported HTML design reference
 tooling/     Asset optimization manifest
 references/  Screen reference images
 ```
 
-The source project is designed to stay lightweight. **PNG file bytes are not equivalent to MCU flash or RAM use**. A true MCU firmware size requires an MCU-targeted build.
+The source project is designed to stay lightweight. **Pre-Qt PNG optimization is intentional and proven in the author's MCU workflow**, reducing palette complexity and source asset footprint before Qt's own resource pipeline. The resulting device flash/RAM footprint still varies by MCU, pixel format, decoding and build configuration; target-specific measurements are reported separately.
 
 ## WebAssembly
 
-A native **Qt WebAssembly** browser build is a planned enhancement. GitHub Pages hosting is **not live yet**; a desktop Qt build is the current implementation. The original HTML reference is not a substitute for a Qt WebAssembly build.
+A native **Qt WebAssembly** browser build is a planned enhancement. GitHub Pages hosting is **not live yet**; a desktop Qt build is the current implementation. The Figma-exported HTML is a design handoff/reference, not the finished Qt implementation or a substitute for a Qt WebAssembly build.
 
 ## Licensing
 
