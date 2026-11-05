@@ -498,6 +498,7 @@ Window {
                 cache: true
             }
             Canvas {
+                id: batteryGaugeCanvas
                 x: 68.0; y: 189.25; width: 112.0; height: 112.0
                 onPaint: {
                     const ctx = getContext("2d"); ctx.reset();
@@ -508,7 +509,7 @@ Window {
                     ctx.beginPath();ctx.strokeStyle="#10B981";
                     ctx.arc(cx,cy,radius,-Math.PI/2,-Math.PI/2+2*Math.PI*root.batteryLevel/100);ctx.stroke();
                 }
-                Connections { target: root; function onBatteryLevelChanged(){ parent.requestPaint() } }
+                Connections { target: root; function onBatteryLevelChanged(){ batteryGaugeCanvas.requestPaint() } }
             }
             Text {
                 x: 100.5; y: 216.0; width: 44.13; height: 39.0
