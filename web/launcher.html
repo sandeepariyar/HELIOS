@@ -3,106 +3,198 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#050910">
-  <title>HELIOS — Energy Management Cockpit | Sandeep Pariyar</title>
-  <meta name="description" content="HELIOS is a Qt 6 / QML / C++ interactive energy-system cockpit designed and developed by Sandeep Pariyar. Runs natively in the browser through WebAssembly.">
+  <meta name="theme-color" content="#060d16">
+  <meta name="description" content="HELIOS energy management cockpit, designed in Figma and developed by Sandeep Pariyar in Qt 6, QML and C++. The live app runs in WebAssembly inside an embedded HMI demonstration frame.">
+  <title>HELIOS — Live Qt 6 Energy Cockpit | Sandeep Pariyar</title>
   <style>
-    :root { color-scheme: dark; --fit: 1; }
-    * { box-sizing:border-box; }
-    html, body { width:100%;height:100%;margin:0;overflow:hidden; }
-    body { background: radial-gradient(ellipse at 50% 46%, #102235 0%, #060d16 55%, #03070c 100%);
-      font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;color:#dcecf8; }
-    #screen { display:none; position:absolute; top:50%;left:50%;width:840px;height:520px;
-      transform:translate(-50%,-50%) scale(var(--fit));transform-origin:center;overflow:hidden;
-      box-shadow:0 18px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(65,133,169,.35); }
-    #qtspinner { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-      width:min(510px,calc(100vw - 44px));padding:34px 36px 26px;text-align:center;
-      background:linear-gradient(155deg,#0d1c29,#08101a);
-      border:1px solid #1e4a60;border-radius:7px;box-shadow:0 20px 80px #0009; }
-    .glyph { color:#15c8d8;font-size:29px;line-height:1;letter-spacing:.15em;margin-bottom:20px; }
-    h1 { margin:0;font-size:36px;letter-spacing:.23em;font-weight:700;color:#f2f8fd; }
-    .subtitle { margin:10px 0 23px;color:#64bcd1;font-size:11px;letter-spacing:.13em; }
-    .meter {height:3px;overflow:hidden;background:#1d3040;border-radius:5px; }
-    .meter:after { content:"";display:block;width:42%;height:100%;
-      background:linear-gradient(90deg,#059eaf,#2df3ca);box-shadow:0 0 12px #1eead2;
-      animation:slide 1.4s ease-in-out infinite alternate; }
-    @keyframes slide {from{transform:translateX(-105%)}to{transform:translateX(340%)}}
-    #qtstatus {margin:19px 0 20px;min-height:30px;font-size:11px;line-height:1.5;color:#9ab2c3}
-    .credit {border-top:1px solid #1c3543;padding-top:15px;color:#7299ad;font-size:9px;letter-spacing:.09em;}
-    .loading-note { position:fixed;left:50%;bottom:20px;transform:translateX(-50%);
-      color:#536c7c;font-size:10px;white-space:nowrap;text-align:center;max-width:98vw; }
-    button { cursor:pointer;color:#07131b;border:0;border-radius:3px;padding:9px 18px;
-      background:#29dae2;font:700 11px ui-monospace,monospace; }
-    #retry {display:none;margin:0 auto 16px}
-    @media (max-width:500px){ #qtspinner{padding:26px 19px 20px}h1{font-size:29px}.loading-note{font-size:8px} }
-    @media (prefers-reduced-motion:reduce){ .meter:after{animation:none;width:100%;transform:none} }
+    :root { color-scheme: dark; --stage-scale: 1; }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      background: radial-gradient(ellipse at 52% 40%, #183044 0%, #0a1521 48%, #04080e 100%);
+      color: #d6e9f5;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    }
+    #device {
+      position: absolute; top: 50%; left: 50%; width: 1366px; height: 873px;
+      overflow: hidden; transform: translate(-50%, -50%) scale(var(--stage-scale));
+      transform-origin: center center; isolation: isolate;
+      filter: drop-shadow(0 18px 28px rgba(0,0,0,.5));
+    }
+    #hardware {
+      position: absolute; left: -28px; top: -92px;
+      width: 1448px; height: 1086px; display: block;
+      pointer-events: none; user-select: none; -webkit-user-drag: none;
+    }
+    /* The native Qt window is 840x520. Its aspect ratio is preserved; the
+       remaining 40px black mat at either side sits inside the physical glass. */
+    #screen {
+      position: absolute; left: 160px; top: 74px;
+      width: 840px; height: 520px;
+      transform-origin: top left; transform: scale(1.23);
+      background: #06090e; overflow: hidden; display: none;
+      touch-action: manipulation;
+    }
+    #screen canvas { display: block; }
+    #qtspinner {
+      position: absolute; left: 160px; top: 74px; width: 1033.2px; height: 639.6px;
+      background: radial-gradient(ellipse at center, #0f2938, #04090f 65%);
+      display: flex; justify-content: center; align-items: center;
+      flex-direction: column; gap: 17px; border: 1px solid #213c4b;
+      text-align: center;
+    }
+    #qtspinner .logo { color: #12cee1; font-size: 43px; line-height: 1; }
+    #qtspinner h1 { margin: 0; font-size: 31px; letter-spacing: .35em; }
+    #qtspinner .sub { color: #70afc5; font-size: 12px; letter-spacing: .12em; }
+    #qtspinner .credit { color: #628598; font-size: 10px; }
+    .meter { width: 290px; height: 3px; background: #203a49; overflow: hidden; }
+    .meter::before { content: ""; display: block; width: 45%; height: 100%;
+      background: #19d8db; animation: drift 1.35s ease-in-out infinite alternate; }
+    @keyframes drift { from { transform: translateX(-100%); } to { transform: translateX(350%); } }
+    #qtstatus { min-height: 30px; max-width: 710px; font-size: 11px; color: #8ca7b8; }
+    button { font-family: inherit; cursor: pointer; }
+    #retry { display: none; padding: 9px 20px; color: #081824; background: #20d2dc;
+      border: 0; border-radius: 4px; font-weight: bold; }
+    #audioToggle {
+      position: fixed; right: 22px; top: 19px; z-index: 20;
+      border: 1px solid #32657a; border-radius: 5px;
+      color: #b7dce7; background: #101f2ce8; padding: 10px 14px;
+      font-size: 11px; font-weight: 700; letter-spacing: .055em;
+      box-shadow: 0 4px 16px #0008;
+    }
+    #audioToggle[aria-pressed="true"] { color: #52e2be; border-color: #1d8b74; }
+    #audioToggle:focus-visible, #retry:focus-visible { outline: 2px solid #58e7ff; outline-offset: 3px; }
+    #audioHelp { position: fixed; right: 22px; top: 59px; max-width: 250px; font-size: 9px;
+      color: #7893a6; text-align: right; z-index: 19; }
+    #footer { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+      white-space: nowrap; color: #6d8b9b; font-size: 10px; letter-spacing: .08em; }
+    @media (max-width: 850px) { #audioToggle { top: 8px; right: 9px; font-size: 10px; }
+      #audioHelp, #footer { display: none; } }
+    @media (prefers-reduced-motion: reduce) { .meter::before { animation: none; width: 100%; } }
   </style>
 </head>
 <body>
-  <section id="qtspinner" aria-live="polite">
-    <div class="glyph" aria-hidden="true">◈</div>
-    <h1>HELIOS</h1>
-    <div class="subtitle">ENERGY MANAGEMENT // QT WEBASSEMBLY</div>
-    <div class="meter" id="meter"></div>
-    <div id="qtstatus">INITIALIZING QML + C++ SIMULATOR</div>
-    <button id="retry" type="button" onclick="location.reload()">RETRY LAUNCH</button>
-    <div class="credit">DESIGNED &amp; DEVELOPED BY SANDEEP PARIYAR</div>
-  </section>
-  <div id="screen"></div>
-  <div class="loading-note" id="webnote">ACTUAL QT 6 • QML • C++ • WEBASSEMBLY</div>
+  <main id="device" aria-label="HELIOS live energy cockpit embedded in an MCU-style hardware frame">
+    <img id="hardware" src="helios-mcu-frame.webp" width="1448" height="1086"
+      alt="Front-facing HELIOS embedded touchscreen enclosure" draggable="false">
+    <section id="qtspinner" aria-live="polite" aria-label="Loading HELIOS">
+      <div class="logo" aria-hidden="true">ϟ</div>
+      <h1>HELIOS</h1>
+      <div class="sub">LOADING ACTUAL QT 6 / QML / C++ WEBASSEMBLY</div>
+      <div class="meter" id="loadMeter"></div>
+      <div id="qtstatus">INITIALIZING ENERGY SYSTEM</div>
+      <button id="retry" type="button" onclick="location.reload()">RETRY</button>
+      <div class="credit">DESIGNED &amp; DEVELOPED BY SANDEEP PARIYAR</div>
+    </section>
+    <div id="screen" aria-label="Interactive Qt WebAssembly cockpit"></div>
+  </main>
+  <button id="audioToggle" type="button" aria-pressed="false" title="Enable sounds after a click">♪ ENABLE SOUND</button>
+  <div id="audioHelp">Browsers require a click before playing audio</div>
+  <div id="footer">HELIOS · FIGMA DESIGN · QML / C++ IMPLEMENTATION · SANDEEP PARIYAR</div>
   <script src="Helios.js"></script>
   <script src="qtloader.js"></script>
   <script>
   (() => {
-    const spinner = document.getElementById('qtspinner');
-    const screen = document.getElementById('screen');
-    const status = document.getElementById('qtstatus');
-    const retry = document.getElementById('retry');
-    const note = document.getElementById('webnote');
-    const meter = document.getElementById('meter');
-    let loaded = false;
+    // Qt WASM does not require Qt Multimedia. These are the existing original
+    // short WAV effects, streamed/decoded by browser Web Audio on user gesture.
+    const filenames = ['confirm.wav', 'warning.wav', 'trip.wav'];
+    const audio = {
+      ctx: null, enabled: false, buffers: [], playCalls: 0, playedSounds: 0,
+      async unlock() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) throw new Error('Web Audio unavailable in this browser');
+          this.ctx = new AudioContext();
+        }
+        // Resume before first await/fetch to keep the browser user gesture.
+        await this.ctx.resume();
+        if (!this.buffers.length) {
+          this.buffers = await Promise.all(filenames.map(async name => {
+            const res = await fetch('sounds/' + name);
+            if (!res.ok) throw new Error(name + ': HTTP ' + res.status);
+            return this.ctx.decodeAudioData(await res.arrayBuffer());
+          }));
+        }
+        this.enabled = true;
+      },
+      play(kind, volume) {
+        if (!this.enabled || !this.ctx || this.ctx.state !== 'running') return;
+        const index = Math.max(0, Math.min(2, Number(kind) | 0));
+        const buffer = this.buffers[index];
+        if (!buffer) return;
+        this.playCalls++;
+        try {
+          const source = this.ctx.createBufferSource();
+          const gain = this.ctx.createGain();
+          gain.gain.value = Math.max(0, Math.min(1, Number(volume) || 0));
+          source.buffer = buffer;
+          source.connect(gain); gain.connect(this.ctx.destination);
+          source.start();
+          this.playedSounds++;
+        } catch (e) { console.warn('HELIOS_AUDIO_ERROR:', e); }
+      }
+    };
+    window.heliosAudio = audio;
+    const audioToggle = document.getElementById('audioToggle');
+    const audioHelp = document.getElementById('audioHelp');
+    const renderAudioState = () => {
+      audioToggle.setAttribute('aria-pressed', String(audio.enabled));
+      audioToggle.textContent = audio.enabled ? '♫ SOUND ON · MUTE' : '♪ ENABLE SOUND';
+      audioHelp.textContent = audio.enabled ? 'Qt controls use original HELIOS WAV sounds' :
+        'Browsers require a click before playing audio';
+    };
+    audioToggle.addEventListener('click', async () => {
+      audioToggle.disabled = true;
+      try {
+        if (audio.enabled) audio.enabled = false;
+        else {
+          await audio.unlock();
+          audio.play(0, .35);
+        }
+      } catch (e) {
+        audio.enabled = false;
+        console.error('HELIOS_AUDIO_ERROR:', e);
+        audioHelp.textContent = 'Audio unavailable: ' + e.message;
+      } finally {
+        audioToggle.disabled = false;
+        renderAudioState();
+      }
+    });
+    const stage = document.getElementById('device');
     const fit = () => {
-      const scale = Math.min(1.8, (innerWidth - 32) / 840, (innerHeight - 32) / 520);
-      document.documentElement.style.setProperty('--fit', Math.max(.2, scale).toFixed(4));
+      const scale = Math.max(.18, Math.min(1.34, (innerWidth - 34) / 1366, (innerHeight - 35) / 873));
+      document.documentElement.style.setProperty('--stage-scale', scale.toFixed(5));
     };
     addEventListener('resize', fit);
     fit();
+    const screen = document.getElementById('screen');
+    const spinner = document.getElementById('qtspinner');
+    const status = document.getElementById('qtstatus');
+    const retry = document.getElementById('retry');
+    const meter = document.getElementById('loadMeter');
+    let loaded = false;
     const fail = message => {
-      screen.style.display = 'none';
-      spinner.style.display = 'block';
+      screen.style.display = 'none'; spinner.style.display = 'flex';
+      retry.style.display = 'inline-block'; meter.style.display = 'none';
       status.textContent = message;
-      retry.style.display = 'block';
-      meter.style.display = 'none';
-      note.textContent = 'CHECK THE BROWSER CONSOLE FOR QT RUNTIME DETAILS';
     };
-    // The module may take several seconds on first load; never report success merely
-    // because WASM was downloaded. Qt must create the QML root successfully.
-    qtLoad({
-      qt: {
-        onLoaded: () => {
-          loaded = true;
-          spinner.style.display = 'none';
-          screen.style.display = 'block';
-          note.style.display = 'none';
-          fit();
-        },
-        onExit: exitData => {
-          fail('THE QT APPLICATION EXITED' +
-            (exitData.code !== undefined ? ' (CODE ' + exitData.code + ')' : '') +
-            (exitData.text ? ' — ' + exitData.text : ''));
-        },
-        entryFunction: window.Helios_entry,
-        containerElements: [screen]
-      }
-    }).catch(error => {
-      console.error('HELIOS WebAssembly loader failed:', error);
-      fail('LOADER ERROR — ' + (error.message || String(error)));
-    });
+    window.addEventListener('error', e => console.error('HELIOS_WEB_ERROR:', e.message));
+    // HELIOS's single-threaded Qt WebAssembly loader; no screenshot or mock app.
+    qtLoad({qt: {
+      onLoaded: () => {
+        loaded = true; screen.style.display = 'block'; spinner.style.display = 'none';
+        fit();
+      },
+      onExit: exitData => {
+        fail('QT APPLICATION EXITED' + (exitData.code !== undefined ? ' (' + exitData.code + ')' : ''));
+      },
+      entryFunction: window.Helios_entry,
+      containerElements: [screen]
+    }}).catch(e => { console.error('HELIOS_WASM_LOAD_ERROR:', e); fail(String(e.message || e)); });
     setTimeout(() => {
-      if (!loaded && retry.style.display !== 'block') {
-        status.textContent = 'STILL LOADING QT WEBASSEMBLY — FIRST VISIT MAY TAKE LONGER';
-      }
-    }, 10000);
+      if (!loaded && retry.style.display === 'none')
+        status.textContent = 'LOADING QT RUNTIME · FIRST LAUNCH CAN TAKE LONGER';
+    }, 9000);
   })();
   </script>
 </body>

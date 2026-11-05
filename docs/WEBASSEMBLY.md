@@ -17,4 +17,18 @@ The workflow currently targets the official Qt 6.11.2 package. If its package la
 
 In Qt Creator select a **Qt 6.11.x WebAssembly single-threaded kit**, configure the CMake project, and build in Release mode. Serve the generated browser files with a local web server (not directly from the file system). Qt normally generates `Helios.wasm`, `Helios.js`, `Helios.html` and its `qtloader.js` loader.
 
-Open-Meteo requests depend on browser CORS/network policy. Web audio may be unavailable, while the energy simulator continues to work offline.
+Open-Meteo requests depend on browser CORS/network policy. The energy simulator continues to work offline.
+
+## Device mockup and viewport
+
+The GitHub Pages launcher uses an optimized WebP render of a front-facing MCU-style display. The **real Qt WebAssembly canvas** is centered over the display opening, scaled uniformly without changing the QML scene or raster asset colors. The MCU enclosure is a presentation image, not an actual hardware target.
+
+The browser viewport automatically scales the complete device for desktop and mobile screens. The native Qt window is 840×520; the black mat inside the bezel permits a precise aspect-preserving overlay.
+
+## Sound on the browser
+
+Qt Multimedia is optional on desktop and deliberately omitted from the WebAssembly build. The C++ simulator's existing sound events call a small Emscripten JavaScript bridge that plays the three original WAV effects with Web Audio.
+
+**Browsers require a user action to unlock audio.** Click **ENABLE SOUND** on the upper-right of the page. This loads and decodes `sounds/confirm.wav`, `warning.wav`, and `trip.wav`. The app's own Settings sound toggle and volume still determine whether events are sent to the player. The external page button lets viewers mute browser output.
+
+GitHub Actions now uses Chromium to check that the Qt canvas renders inside the centered hardware shell and that a real QML mode click triggers a C++ sound event.

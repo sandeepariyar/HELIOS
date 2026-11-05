@@ -45,7 +45,9 @@ The **native QML/C++ WebAssembly demo is live**, built and deployed automaticall
 
 **[Launch HELIOS in your browser](https://sandeepariyar.github.io/HELIOS/)**
 
-See [WebAssembly build notes](docs/WEBASSEMBLY.md). The browser edition uses the same simulation model, subject to browser networking/audio limitations.
+See [WebAssembly build notes](docs/WEBASSEMBLY.md). The browser edition presents the **real running Qt window** inside an optimized, straight-on MCU-style touchscreen housing. The front-facing enclosure is a visual presentation layer; the controls remain live Qt Quick objects.
+
+**Browser sound:** Click **ENABLE SOUND** once (required by browser autoplay restrictions). The original confirmation, warning and emergency WAV effects are then played through a C++ / Emscripten / Web Audio bridge, without requiring Qt Multimedia on WebAssembly.
 
 ## Code
 

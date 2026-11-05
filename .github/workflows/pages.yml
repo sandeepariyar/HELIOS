@@ -59,6 +59,11 @@ jobs:
           if [ -f build-wasm/qtloader.js ]; then cp build-wasm/qtloader.js site/; fi
           test -s site/Helios.wasm
           cp web/qtlogo.svg site/qtlogo.svg
+          cp web/helios-mcu-frame.webp site/helios-mcu-frame.webp
+          mkdir -p site/sounds
+          cp sounds/confirm.wav sounds/warning.wav sounds/trip.wav site/sounds/
+          test -s site/helios-mcu-frame.webp
+          test -s site/sounds/confirm.wav
           touch site/.nojekyll
       - name: Browser smoke test — verify the actual Qt application opens
         shell: bash

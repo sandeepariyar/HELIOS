@@ -10,6 +10,9 @@
 #include <QtMath>
 #include <algorithm>
 #include <cmath>
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/emscripten.h>
+#endif
 #ifdef Q_OS_WIN
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -68,6 +71,13 @@ void EnergyBackend::playSound(int kind){
 #ifdef HELIOS_HAS_MULTIMEDIA
     QSoundEffect *s= kind==2?&m_trip:(kind==1?&m_warning:&m_confirm);
     s->setVolume(clamp(m_soundVolume/100.0,0.0,1.0));s->play();
+#elif defined(__EMSCRIPTEN__)
+    // Forward existing HELIOS sound events to the page's unlocked Web Audio engine.
+    // Works with the original WAV effects without Qt Multimedia on WebAssembly.
+    EM_ASM({
+        if (globalThis.heliosAudio && typeof globalThis.heliosAudio.play === 'function')
+            globalThis.heliosAudio.play($0, $1);
+    }, kind, clamp(m_soundVolume / 100.0, 0.0, 1.0));
 #elif defined(Q_OS_WIN)
     MessageBeep(kind==2 ? MB_ICONHAND : (kind==1 ? MB_ICONEXCLAMATION : MB_OK));
 #else
