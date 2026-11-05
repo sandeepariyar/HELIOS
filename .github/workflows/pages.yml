@@ -41,6 +41,7 @@ jobs:
           export QT_WASM_ROOT="$HOME/Qt/6.11.2/wasm_singlethread"
           export QT_HOST_ROOT="$HOME/Qt/6.11.2/gcc_64"
           test -f "$QT_WASM_ROOT/bin/qt-cmake"
+          chmod +x "$QT_WASM_ROOT/bin/qt-cmake"
           "$QT_WASM_ROOT/bin/qt-cmake" -S . -B build-wasm -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
             -DQT_HOST_PATH="$QT_HOST_ROOT" \
