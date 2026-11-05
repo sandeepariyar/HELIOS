@@ -38,48 +38,43 @@ const { chromium } = require('playwright-core');
       }
       await page.waitForTimeout(1000);
     }
-    if (ready) {
-      await page.waitForFunction(() => {
-        const s = document.querySelector('#screen');
-        return s && getComputedStyle(s).display !== 'none';
-      }, null, { timeout: 15000 }).catch(error => {
-        errors.push('Qt loaded, but the QML display was not revealed: ' + error.message);
-      });
-    }
-    // Qt creates the WebAssembly window asynchronously after onLoaded.
-    // Wait for the actual canvas rather than checking on the same event tick.
-    await page.waitForSelector('canvas', { state: 'attached', timeout: 15000 })
-      .catch(error => errors.push('Qt canvas never attached: ' + error.message));
-    await page.waitForTimeout(650);
+    await page.waitForFunction(() => {
+      const f = document.querySelector('#qtFrame');
+      const s = document.querySelector('#qtspinner');
+      return f && getComputedStyle(f).opacity === '1' &&
+        s && getComputedStyle(s).display === 'none';
+    }, null, {timeout: 20000})
+      .catch(e => errors.push('Qt iframe not revealed: '+e.message));
+    const qtCanvas = page.frameLocator('#qtFrame').locator('canvas').first();
+    await qtCanvas.waitFor({state:'attached',timeout:15000})
+      .catch(e => errors.push('Qt canvas missing inside iframe: '+e.message));
+    await page.waitForTimeout(500);
     const viewportCheck = await page.evaluate(() => {
-      const canvas = document.querySelector('canvas');
-      const screen = document.querySelector('#screen');
-      const spinner = document.querySelector('#qtspinner');
-      const rect = screen?.getBoundingClientRect();
+      const aperture = document.querySelector('#lcdViewport').getBoundingClientRect();
+      const frame = document.querySelector('#qtFrame').getBoundingClientRect();
+      const device = document.querySelector('#device').getBoundingClientRect();
+      const hw = document.querySelector('#hardware');
       return {
-        canvasPresent: !!canvas,
-        screenVisible: !!screen && getComputedStyle(screen).display !== 'none',
-        spinnerHidden: !!spinner && getComputedStyle(spinner).display === 'none',
-        shownWidth: Math.round(rect?.width || 0),
-        shownHeight: Math.round(rect?.height || 0),
-        hardwareLoaded: !!document.querySelector('#hardware')?.naturalWidth,
-        hardwareVisible: !!document.querySelector('#hardware') &&
-          getComputedStyle(document.querySelector('#hardware')).display !== 'none',
-        stageCenterError: (() => {
-          const d = document.querySelector('#device')?.getBoundingClientRect();
-          return d ? Math.max(Math.abs(d.x + d.width / 2 - innerWidth / 2),
-                              Math.abs(d.y + d.height / 2 - innerHeight / 2)) : 999;
-        })()
+        aperture: {x:aperture.x,y:aperture.y,w:aperture.width,h:aperture.height},
+        frame: {x:frame.x,y:frame.y,w:frame.width,h:frame.height},
+        screenVisible: getComputedStyle(document.querySelector('#qtFrame')).opacity === '1',
+        spinnerHidden: getComputedStyle(document.querySelector('#qtspinner')).display === 'none',
+        hardwareLoaded: hw.naturalWidth > 0,
+        deviceCenterError: Math.max(Math.abs(device.x+device.width/2-innerWidth/2),
+          Math.abs(device.y+device.height/2-innerHeight/2))
       };
     });
-    // Qt WebAssembly may attach its canvas through a shadow root.
-    // Playwright locators pierce open shadow DOM; document.querySelector does not.
-    viewportCheck.canvasPresent = (await page.locator('canvas').count()) > 0;
-    if (!viewportCheck.canvasPresent || !viewportCheck.screenVisible ||
-        !viewportCheck.spinnerHidden || viewportCheck.shownWidth < 600 ||
-        !viewportCheck.hardwareLoaded || !viewportCheck.hardwareVisible ||
-        viewportCheck.stageCenterError > 4) {
-      errors.push('HELIOS viewport is not visibly displayed: ' + JSON.stringify(viewportCheck));
+    const frameCanvasCount = await page.frameLocator('#qtFrame').locator('canvas').count();
+    const canvasBounds = frameCanvasCount ? await qtCanvas.boundingBox() : null;
+    viewportCheck.qtCanvasCount = frameCanvasCount;
+    viewportCheck.canvasBounds = canvasBounds;
+    const a=viewportCheck.aperture,f=viewportCheck.frame;
+    const mapped = Math.abs(a.x-f.x)<2 && Math.abs(a.y-f.y)<2 &&
+      Math.abs(a.w-f.w)<2 && Math.abs(a.h-f.h)<2;
+    if (!mapped || !viewportCheck.qtCanvasCount || !viewportCheck.screenVisible ||
+        !viewportCheck.spinnerHidden || !viewportCheck.hardwareLoaded ||
+        viewportCheck.deviceCenterError > 4) {
+      errors.push('HELIOS viewport is not visibly displayed: '+JSON.stringify(viewportCheck));
     }
     // Browser autoplay policies require a user click. Unlock the 3 original
     // WAV effects and verify a real QML mode button triggers C++ -> Web Audio.
@@ -89,9 +84,11 @@ const { chromium } = require('playwright-core');
       .catch(error => errors.push('Web Audio failed to unlock/load: ' + error.message));
     const soundBefore = await page.evaluate(() => window.heliosAudio?.playCalls || 0);
     const qmlClick = await page.evaluate(() => {
-      const screen = document.querySelector('#screen').getBoundingClientRect();
-      const scale = screen.width / 840;
-      return { x: screen.left + 455 * scale, y: screen.top + 43 * scale };
+      const nativeScreen = document.querySelector('#qtFrame').getBoundingClientRect();
+      // Map the known ECO button at native 840x520 coordinates into
+      // the aperture after browser and hardware-stage scaling.
+      return {x:nativeScreen.x + 455 * nativeScreen.width / 840,
+              y:nativeScreen.y + 43 * nativeScreen.height / 520};
     });
     await page.mouse.click(qmlClick.x, qmlClick.y);
     await page.waitForTimeout(400);
@@ -99,7 +96,7 @@ const { chromium } = require('playwright-core');
     console.log('HELIOS audio test:', JSON.stringify({soundBefore, soundAfter}));
     if (soundAfter <= soundBefore) errors.push('Qt QML click did not invoke the Web Audio bridge');
     await page.screenshot({ path: 'wasm-smoke.png', fullPage: true }).catch(() => {});
-    console.log('HELIOS smoke result:', JSON.stringify({ ready, exited, viewportCheck, errors: errors.slice(-30), title: await page.title(), canvasCount: await page.locator('canvas').count() }));
+    console.log('HELIOS smoke result:', JSON.stringify({ ready, exited, viewportCheck, errors: errors.slice(-30), title: await page.title(), canvasCount: frameCanvasCount }));
     if (!ready || exited || errors.some(x => x.includes('HELIOS_STARTUP_FAILED') || x.includes('HELIOS viewport') || x.includes('Web Audio') || x.includes('QML click'))) process.exitCode = 1;
   } finally {
     await browser.close();

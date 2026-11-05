@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=840,initial-scale=1">
+  <title>HELIOS · Native Qt WebAssembly Display</title>
+  <style>
+    :root { color-scheme: dark; }
+    html,body { width:840px;height:520px;margin:0;padding:0;overflow:hidden;background:#06090e; }
+    #qtScreen {position:absolute;left:0;top:0;width:840px;height:520px;overflow:hidden;}
+  </style>
+</head>
+<body>
+  <div id="qtScreen" aria-label="Live HELIOS QML window"></div>
+  <script src="Helios.js"></script>
+  <script src="qtloader.js"></script>
+  <script>
+    (() => {
+      // Same-origin audio bridge, avoiding any changes to native Qt/C++ sound code.
+      // AudioContext is unlocked in the parent by the ENABLE SOUND button.
+      Object.defineProperty(window, 'heliosAudio', {
+        configurable: false,
+        get() { try { return window.parent.heliosAudio; } catch (_) { return undefined; } }
+      });
+      const report = (type, detail) => {
+        try { window.parent.postMessage({type, detail}, location.origin); } catch (error) {
+          console.error('HELIOS_STATUS_BRIDGE_ERROR', error);
+        }
+      };
+      qtLoad({qt: {
+        onLoaded: () => report('HELIOS_WASM_READY'),
+        onExit: e => report('HELIOS_WASM_EXIT', e && (e.text || e.code)),
+        entryFunction: window.Helios_entry,
+        containerElements: [document.getElementById('qtScreen')]
+      }}).catch(e => {
+        console.error('HELIOS_QT_LOADER_ERROR', e);
+        report('HELIOS_WASM_ERROR', String(e && e.message || e));
+      });
+    })();
+  </script>
+</body>
+</html>

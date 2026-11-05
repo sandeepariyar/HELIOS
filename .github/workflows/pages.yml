@@ -53,6 +53,8 @@ jobs:
         run: |
           mkdir -p site
           cp web/launcher.html site/index.html
+          cp web/qt-host.html site/qt-host.html
+          test -s site/qt-host.html
           for f in build-wasm/*.js build-wasm/*.wasm build-wasm/*.data; do
             [ -f "$f" ] && cp "$f" site/ || true
           done
