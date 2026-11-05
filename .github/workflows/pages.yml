@@ -1,0 +1,67 @@
+name: Build and deploy Qt WebAssembly
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install host prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build libgl1-mesa-dev libxkbcommon-x11-0 libfontconfig1 libxcb-cursor0
+          python3 -m pip install --user 'aqtinstall>=3.2,<4'
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Install Qt for WebAssembly 6.11.2
+        run: |
+          $HOME/.local/bin/aqt install-qt all_os wasm 6.11.2 wasm_singlethread --autodesktop -O "$HOME/Qt"
+      - name: Install matching Emscripten 4.0.7
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: '4.0.7'
+      - name: Configure WebAssembly build
+        shell: bash
+        run: |
+          export QT_WASM_ROOT="$HOME/Qt/6.11.2/wasm_singlethread"
+          export QT_HOST_ROOT="$HOME/Qt/6.11.2/gcc_64"
+          test -f "$QT_WASM_ROOT/bin/qt-cmake"
+          "$QT_WASM_ROOT/bin/qt-cmake" -S . -B build-wasm -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DQT_HOST_PATH="$QT_HOST_ROOT" \
+            -DHELIOS_FETCH_FONTS=ON
+      - name: Compile QML and C++ to WebAssembly
+        run: cmake --build build-wasm --parallel 4
+      - name: Assemble static Pages bundle
+        shell: bash
+        run: |
+          mkdir -p site
+          cp build-wasm/Helios.html site/index.html
+          for f in build-wasm/*.js build-wasm/*.wasm build-wasm/*.data; do
+            [ -f "$f" ] && cp "$f" site/ || true
+          done
+          if [ -f build-wasm/qtloader.js ]; then cp build-wasm/qtloader.js site/; fi
+          test -s site/Helios.wasm
+          touch site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
