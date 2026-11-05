@@ -3,7 +3,7 @@
 **Designed & Developed by Sandeep Pariyar**  
 **Qt 6 · QML · C++ · Optimized Embedded-Inspired UI**
 
-**Design origin:** Designed in Figma by Sandeep Pariyar, exported from Figma to HTML as a design reference, and implemented as a native Qt 6 application in QML and C++.
+**Design origin:** Designed in Figma by Sandeep Pariyar and implemented as a native Qt 6 application using QML and C++.
 
 HELIOS is a desktop energy-system cockpit and interactive portfolio simulator. The application presents an 800 × 480 embedded-inspired marine/residential energy interface with power-flow visualizations, battery monitoring, actuator controls, and an engineering diagnostics panel.
 
@@ -39,7 +39,6 @@ src/         C++ backend and simulation logic
 qml/         Native QML screens, controls and DEV panel
 assets/      Reusable optimized PNG graphics
 sounds/      Original short WAV effects
-prototype/   Figma-exported HTML design reference
 tooling/     Asset optimization manifest
 references/  Screen reference images
 ```
@@ -48,9 +47,7 @@ The source project is designed to stay lightweight. **Pre-Qt PNG optimization is
 
 ## WebAssembly
 
-A native **Qt WebAssembly** browser build is a planned enhancement. GitHub Pages hosting is **not live yet**; a desktop Qt build is the current implementation. The Figma-exported HTML is a design handoff/reference, not the finished Qt implementation or a substitute for a Qt WebAssembly build.
-
-## Licensing
+A native **Qt WebAssembly** browser build is a planned enhancement. GitHub Pages hosting is **not live yet**; a desktop Qt build is the current implementation. ## Licensing
 
 Original HELIOS code is licensed under **MIT** (see [LICENSE](LICENSE)). Qt and the free fonts used by the application have their own licenses. Open-Meteo data/API usage is subject to Open-Meteo terms.
 
