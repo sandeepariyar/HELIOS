@@ -41,9 +41,9 @@ CMake uses `NO_CACHEGEN` to avoid MinGW's large-QML-object assembler limitation.
 
 ## Browser demo (Qt WebAssembly)
 
-This repository includes an **automated Qt WebAssembly build and GitHub Pages deployment workflow** in `.github/workflows/pages.yml`. Once the workflow succeeds and GitHub Pages uses **GitHub Actions** as its source, the native QML/C++ demo can be opened at:
+The **native QML/C++ WebAssembly demo is live**, built and deployed automatically by GitHub Actions using `.github/workflows/pages.yml`:
 
-**https://sandeepariyar.github.io/HELIOS/**
+**[Launch HELIOS in your browser](https://sandeepariyar.github.io/HELIOS/)**
 
 See [WebAssembly build notes](docs/WEBASSEMBLY.md). The browser edition uses the same simulation model, subject to browser networking/audio limitations.
 
