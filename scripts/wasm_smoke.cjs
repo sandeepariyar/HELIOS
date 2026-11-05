@@ -72,6 +72,9 @@ const { chromium } = require('playwright-core');
         })()
       };
     });
+    // Qt WebAssembly may attach its canvas through a shadow root.
+    // Playwright locators pierce open shadow DOM; document.querySelector does not.
+    viewportCheck.canvasPresent = (await page.locator('canvas').count()) > 0;
     if (!viewportCheck.canvasPresent || !viewportCheck.screenVisible ||
         !viewportCheck.spinnerHidden || viewportCheck.shownWidth < 600 ||
         !viewportCheck.hardwareLoaded || !viewportCheck.hardwareVisible ||
