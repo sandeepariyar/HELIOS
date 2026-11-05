@@ -52,7 +52,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p site
-          cp build-wasm/Helios.html site/index.html
+          cp web/launcher.html site/index.html
           for f in build-wasm/*.js build-wasm/*.wasm build-wasm/*.data; do
             [ -f "$f" ] && cp "$f" site/ || true
           done
