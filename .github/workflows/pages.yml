@@ -59,6 +59,23 @@ jobs:
           if [ -f build-wasm/qtloader.js ]; then cp build-wasm/qtloader.js site/; fi
           test -s site/Helios.wasm
           touch site/.nojekyll
+      - name: Browser smoke test — verify the actual Qt application opens
+        shell: bash
+        run: |
+          npm install --no-save --no-audit --no-fund playwright-core@1.56.1
+          CHROME_PATH="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$CHROME_PATH" || { echo "Chrome not available on runner"; exit 1; }
+          export CHROME_PATH
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory site >/tmp/helios-http.log 2>&1 &
+          echo $! >/tmp/helios-http.pid
+          node scripts/wasm_smoke.cjs
+      - name: Upload browser diagnostic screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: helios-browser-screenshot
+          path: wasm-smoke.png
+          if-no-files-found: ignore
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
