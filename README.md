@@ -1,58 +1,66 @@
 # HELIOS — Energy Management Cockpit
 
 **Designed & Developed by Sandeep Pariyar**  
-**Qt 6 · QML · C++ · Optimized Embedded-Inspired UI**
+**Designed in Figma · Built with Qt 6, QML and C++**
 
-**Design origin:** Designed in Figma by Sandeep Pariyar and implemented as a native Qt 6 application using QML and C++.
+A premium embedded-inspired energy cockpit showcasing native Qt Quick interaction, responsive instrumentation and an optimized graphical asset system.
 
-HELIOS is a desktop energy-system cockpit and interactive portfolio simulator. The application presents an 800 × 480 embedded-inspired marine/residential energy interface with power-flow visualizations, battery monitoring, actuator controls, and an engineering diagnostics panel.
+![HELIOS cockpit](references/main.png)
 
-> **Simulator, not a hardware controller.** PV generation, battery pack values, contactor states, CAN status, and safety functions are simulated. Weather and irradiance may be retrieved from Open-Meteo; those are external weather/model data, not measured electrical telemetry.
+## Experience
 
-## Highlights
+- Three connected views: **Cockpit**, **Flow Topology**, **BMS Storage**.
+- Native QML animations, custom linear and radial controls, live status indicators and precise native typography.
+- A C++ energy simulation model drives PV generation, demand, battery state, inverter behavior, power exchange and safety events.
+- ECO / BALANCED / PERF, actuator toggles, simulated bus isolation, alarm acknowledgement and reset.
+- Weather and solar-irradiance context from **Open-Meteo**, with a working offline simulator fallback.
+- Optional sound cues and a DEV panel for build-footprint statistics and MCU framebuffer estimates.
 
-- Native **Qt Quick / QML** user interface with a **C++** energy simulation backend
-- Cockpit, Flow Topology, and BMS Storage views
-- ECO / BALANCED / PERF modes, configurable demand and PV settings
-- Interactive radial battery SOC control and simulated 16-cell pack visualization
-- Simulated bus isolation, reset, alarms, and event log
-- Optional audio feedback and real Open-Meteo weather / solar irradiance
-- MCU-oriented graphics: **pre-Qt palette reduction**, reusable assets, validated nine-slice backgrounds and native QML text. The pre-Qt PNG optimization workflow has been tested by the author on MCU projects.
-- Developer metrics showing source-asset usage and explicitly labeled framebuffer estimates
-- Designed for **Qt 6 Community Edition**; no Qt for MCUs commercial license needed
+**This is an interactive simulator, not a real electrical controller.** Electrical and battery telemetry is simulated; external weather is clearly identified. Emergency isolation operates on simulated state only.
 
-## Build on Windows
+## Optimized by design
 
-Use **Qt 6.5+**, CMake 3.21+, a C++17 compiler, and Qt modules **Quick** and **Network**. Qt Multimedia is optional.
+HELIOS was built with low-resource interfaces in mind. Its graphical resources use **aggressive pre-Qt palette reduction**, reusable image families and nine-slice components, while all ordinary text and changing values remain native QML.
 
-1. Clone this repository.
-2. Open `CMakeLists.txt` in Qt Creator.
-3. Select your desktop Qt kit (tested by the author using Qt 6.11.2 MinGW on Windows).
-4. Configure and build.
+- **60 optimized UI PNGs**
+- **15.2 KiB** total source PNG data (this revision)
+- Reusable states, tiny backgrounds and image deduplication
 
-The CMake project uses `NO_CACHEGEN` to avoid a MinGW object-size issue with large generated QML sources.
+These asset optimizations are suitable for MCU-oriented workflows. The public build runs on Qt 6 desktop and WebAssembly, not Qt Quick Ultralite firmware.
 
-## Project structure
+## Build locally
 
-```text
-src/         C++ backend and simulation logic
-qml/         Native QML screens, controls and DEV panel
-assets/      Reusable optimized PNG graphics
-sounds/      Original short WAV effects
-tooling/     Asset optimization manifest
-references/  Screen reference images
-```
+**Requirements:** Qt 6.5+ (Qt Quick and Network), CMake 3.21+, C++17. Qt Multimedia is optional.
 
-The source project is designed to stay lightweight. **Pre-Qt PNG optimization is intentional and proven in the author's MCU workflow**, reducing palette complexity and source asset footprint before Qt's own resource pipeline. The resulting device flash/RAM footprint still varies by MCU, pixel format, decoding and build configuration; target-specific measurements are reported separately.
+1. Clone the repository.
+2. Open `CMakeLists.txt` in **Qt Creator**.
+3. Select a Qt 6 desktop kit (Windows MinGW supported).
+4. Configure and run.
 
-## WebAssembly
+CMake uses `NO_CACHEGEN` to avoid MinGW's large-QML-object assembler limitation. At configuration, an optional helper downloads the freely licensed JetBrains Mono and Space Grotesk fonts. Font binaries are not checked into this repository.
 
-A native **Qt WebAssembly** browser build is a planned enhancement. GitHub Pages hosting is **not live yet**; a desktop Qt build is the current implementation.
+## Browser demo (Qt WebAssembly)
 
-## Licensing
+This repository includes an **automated Qt WebAssembly build and GitHub Pages deployment workflow** in `.github/workflows/pages.yml`. Once the workflow succeeds and GitHub Pages uses **GitHub Actions** as its source, the native QML/C++ demo can be opened at:
 
-Original HELIOS code is licensed under **MIT** (see [LICENSE](LICENSE)). Qt and the free fonts used by the application have their own licenses. Open-Meteo data/API usage is subject to Open-Meteo terms.
+**https://sandeepariyar.github.io/HELIOS/**
 
----
+See [WebAssembly build notes](docs/WEBASSEMBLY.md). The browser edition uses the same simulation model, subject to browser networking/audio limitations.
 
-© 2026 **Sandeep Pariyar** — Designed & Developed by Sandeep Pariyar.
+## Code
+
+| Folder | Contents |
+|---|---|
+| `src/` | C++ energy simulation, Open-Meteo networking, state management and application entry point |
+| `qml/` | Native QML screens, slider components, nine-slice buttons and DEV metrics panel |
+| `assets/` | Optimized PNGs referenced by QML |
+| `sounds/` | Short original audio cues |
+| `tooling/` | Asset optimization manifest and methodology |
+| `references/` | Screenshots |
+| `tests/` | Source/asset preflight checks |
+
+## License and attribution
+
+Copyright © 2026 **Sandeep Pariyar**. HELIOS original source code is under the [MIT License](LICENSE). Qt components and downloaded fonts are governed by their respective licenses. Open-Meteo usage is subject to its API terms.
+
+**Designed & Developed by Sandeep Pariyar.**
