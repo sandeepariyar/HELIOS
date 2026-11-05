@@ -1,0 +1,586 @@
+{
+  "version": "0.3",
+  "project": "HELIOS Qt 6 software simulator",
+  "generatedOn": "2026-11-05",
+  "output": {
+    "width": 840,
+    "height": 520,
+    "embeddedDisplayWidth": 800,
+    "embeddedDisplayHeight": 480
+  },
+  "assets": {
+    "count": 60,
+    "png_source_bytes": 15599,
+    "nine_slice_count": 35,
+    "total_references": 124
+  },
+  "formats": "pre-Qt optimized source PNGs; not target flash/RAM size",
+  "functionality": {
+    "screenCount": 3,
+    "liveHardwareConnected": false,
+    "weatherApi": "Open-Meteo current weather, no key (non-commercial)",
+    "weatherRefreshMinutes": 15,
+    "audio": "Qt Multimedia preferred, Windows system sounds fallback"
+  },
+  "files": [
+    {
+      "name": "slice_0a3b99e420c61a0b.png",
+      "width": 9,
+      "height": 9,
+      "bytes": 100,
+      "unique_rgba_values": 1,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_0f1b1c0a28b30e24.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 229,
+      "unique_rgba_values": 10,
+      "references": 4,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_1a6c05608eb37446.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 164,
+      "unique_rgba_values": 5,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_2e4fc54571a85a5e.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 159,
+      "unique_rgba_values": 4,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_359b0f433a4b7316.png",
+      "width": 19,
+      "height": 19,
+      "bytes": 189,
+      "unique_rgba_values": 5,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_4e8b116d4a5a5aea.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 216,
+      "unique_rgba_values": 8,
+      "references": 6,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_57cb3cf06b37ad71.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 192,
+      "unique_rgba_values": 8,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_5d0b7f7fa0bb4b01.png",
+      "width": 9,
+      "height": 9,
+      "bytes": 85,
+      "unique_rgba_values": 2,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_6130b84fb72f0812.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 219,
+      "unique_rgba_values": 8,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_6cd4903169a33037.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 221,
+      "unique_rgba_values": 8,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_71437b2ddae35c82.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 230,
+      "unique_rgba_values": 10,
+      "references": 6,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_72cb8de5f543e4cc.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 230,
+      "unique_rgba_values": 10,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_7689bd57393136b1.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 147,
+      "unique_rgba_values": 4,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_829e0a22c095def2.png",
+      "width": 9,
+      "height": 9,
+      "bytes": 74,
+      "unique_rgba_values": 2,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_850fac8c24dc1263.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 221,
+      "unique_rgba_values": 8,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_8ab2c6844e99cf45.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 211,
+      "unique_rgba_values": 8,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_8b1b5edb159dba20.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 223,
+      "unique_rgba_values": 8,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_8b49078bc768edb0.png",
+      "width": 9,
+      "height": 9,
+      "bytes": 78,
+      "unique_rgba_values": 2,
+      "references": 2,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_9245f5cf21d01f50.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 106,
+      "unique_rgba_values": 2,
+      "references": 16,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_9a254162ff68d63e.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 219,
+      "unique_rgba_values": 8,
+      "references": 6,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_9b48f99203fc5578.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 227,
+      "unique_rgba_values": 10,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_b0bcea903cc40575.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 156,
+      "unique_rgba_values": 5,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_b2dcddeaebf96626.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 230,
+      "unique_rgba_values": 10,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_c278e08bb689fcb0.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 147,
+      "unique_rgba_values": 4,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_c95432aaee43aa21.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 154,
+      "unique_rgba_values": 4,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_d0dd5272a753372a.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 221,
+      "unique_rgba_values": 8,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_de09bab7dcce159a.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 147,
+      "unique_rgba_values": 4,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_e0dd51f7fc96a562.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 181,
+      "unique_rgba_values": 5,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_ec071827d55d536e.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 223,
+      "unique_rgba_values": 8,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_ee0a7df79e275aee.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 220,
+      "unique_rgba_values": 8,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_efb6e64e267ec8c0.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 220,
+      "unique_rgba_values": 8,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_f03010fd3f2a8fcc.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 159,
+      "unique_rgba_values": 4,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_faf2047cd8f57c76.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 147,
+      "unique_rgba_values": 4,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_fbe9b1f18964bf4a.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 147,
+      "unique_rgba_values": 4,
+      "references": 3,
+      "nine_slice": true
+    },
+    {
+      "name": "slice_ff666beac64d5b91.png",
+      "width": 15,
+      "height": 15,
+      "bytes": 221,
+      "unique_rgba_values": 8,
+      "references": 1,
+      "nine_slice": true
+    },
+    {
+      "name": "sprite_09293981aedab5da.png",
+      "width": 125,
+      "height": 6,
+      "bytes": 95,
+      "unique_rgba_values": 1,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_1149a20d805005bd.png",
+      "width": 16,
+      "height": 16,
+      "bytes": 228,
+      "unique_rgba_values": 8,
+      "references": 3,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_1b5890e132223713.png",
+      "width": 39,
+      "height": 6,
+      "bytes": 84,
+      "unique_rgba_values": 1,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_1cf32d75c0086887.png",
+      "width": 32,
+      "height": 6,
+      "bytes": 278,
+      "unique_rgba_values": 18,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_24777f95dc4a0046.png",
+      "width": 6,
+      "height": 6,
+      "bytes": 119,
+      "unique_rgba_values": 3,
+      "references": 3,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_29e1b6af0e4871ca.png",
+      "width": 210,
+      "height": 216,
+      "bytes": 163,
+      "unique_rgba_values": 2,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_48a914b1ef6192bf.png",
+      "width": 249,
+      "height": 74,
+      "bytes": 195,
+      "unique_rgba_values": 4,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_554c8662b4c33695.png",
+      "width": 96,
+      "height": 6,
+      "bytes": 118,
+      "unique_rgba_values": 2,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_5a6e491b55f6488c.png",
+      "width": 14,
+      "height": 14,
+      "bytes": 186,
+      "unique_rgba_values": 5,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_6858657d5b817275.png",
+      "width": 8,
+      "height": 8,
+      "bytes": 129,
+      "unique_rgba_values": 4,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_69acc86135784f2a.png",
+      "width": 14,
+      "height": 14,
+      "bytes": 186,
+      "unique_rgba_values": 5,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_6c22b2a6f229dfbf.png",
+      "width": 8,
+      "height": 8,
+      "bytes": 129,
+      "unique_rgba_values": 4,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_78ce7cd28aaba745.png",
+      "width": 210,
+      "height": 216,
+      "bytes": 137,
+      "unique_rgba_values": 2,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_80ef8d6bda0043e2.png",
+      "width": 249,
+      "height": 74,
+      "bytes": 1371,
+      "unique_rgba_values": 16,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_91654c82b0ae5860.png",
+      "width": 156,
+      "height": 6,
+      "bytes": 120,
+      "unique_rgba_values": 2,
+      "references": 3,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_abf064722b3e6e16.png",
+      "width": 5,
+      "height": 6,
+      "bytes": 133,
+      "unique_rgba_values": 5,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_b0a38f86c46e2d60.png",
+      "width": 8,
+      "height": 8,
+      "bytes": 129,
+      "unique_rgba_values": 4,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_baa032b98fc466a4.png",
+      "width": 310,
+      "height": 216,
+      "bytes": 3526,
+      "unique_rgba_values": 8,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_c52fad8f5ec547e0.png",
+      "width": 184,
+      "height": 8,
+      "bytes": 149,
+      "unique_rgba_values": 4,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_ca889b8e8ed08478.png",
+      "width": 249,
+      "height": 74,
+      "bytes": 902,
+      "unique_rgba_values": 10,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_d0232858a3426dc7.png",
+      "width": 14,
+      "height": 14,
+      "bytes": 215,
+      "unique_rgba_values": 8,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_d4700079cea0de22.png",
+      "width": 112,
+      "height": 112,
+      "bytes": 396,
+      "unique_rgba_values": 2,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_e1165027d68c27e8.png",
+      "width": 6,
+      "height": 6,
+      "bytes": 119,
+      "unique_rgba_values": 3,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_eaa90d0550710c43.png",
+      "width": 102,
+      "height": 21,
+      "bytes": 118,
+      "unique_rgba_values": 2,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_f9050db8fbcac18b.png",
+      "width": 122,
+      "height": 6,
+      "bytes": 97,
+      "unique_rgba_values": 1,
+      "references": 1,
+      "nine_slice": false
+    },
+    {
+      "name": "sprite_fd120a4ad63e33b6.png",
+      "width": 156,
+      "height": 18,
+      "bytes": 97,
+      "unique_rgba_values": 2,
+      "references": 1,
+      "nine_slice": false
+    }
+  ],
+  "features_v03": [
+    "Centered native-text radial SOC",
+    "Safe topology headings and readouts",
+    "Dimmed blocking Settings scrim",
+    "Lightweight flow animation",
+    "DEV metrics and framebuffer estimator",
+    "Verified source asset reuse"
+  ],
+  "design_source": "Figma",
+  "implementation": "Qt 6 QML and C++"
+}
