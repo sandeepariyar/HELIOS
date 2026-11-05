@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050910">
+  <title>HELIOS — Energy Management Cockpit | Sandeep Pariyar</title>
+  <meta name="description" content="HELIOS is a Qt 6 / QML / C++ interactive energy-system cockpit designed and developed by Sandeep Pariyar. Runs natively in the browser through WebAssembly.">
+  <style>
+    :root { color-scheme: dark; --fit: 1; }
+    * { box-sizing:border-box; }
+    html, body { width:100%;height:100%;margin:0;overflow:hidden; }
+    body { background: radial-gradient(ellipse at 50% 46%, #102235 0%, #060d16 55%, #03070c 100%);
+      font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;color:#dcecf8; }
+    #screen { display:none; position:absolute; top:50%;left:50%;width:840px;height:520px;
+      transform:translate(-50%,-50%) scale(var(--fit));transform-origin:center;overflow:hidden;
+      box-shadow:0 18px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(65,133,169,.35); }
+    #qtspinner { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      width:min(510px,calc(100vw - 44px));padding:34px 36px 26px;text-align:center;
+      background:linear-gradient(155deg,#0d1c29,#08101a);
+      border:1px solid #1e4a60;border-radius:7px;box-shadow:0 20px 80px #0009; }
+    .glyph { color:#15c8d8;font-size:29px;line-height:1;letter-spacing:.15em;margin-bottom:20px; }
+    h1 { margin:0;font-size:36px;letter-spacing:.23em;font-weight:700;color:#f2f8fd; }
+    .subtitle { margin:10px 0 23px;color:#64bcd1;font-size:11px;letter-spacing:.13em; }
+    .meter {height:3px;overflow:hidden;background:#1d3040;border-radius:5px; }
+    .meter:after { content:"";display:block;width:42%;height:100%;
+      background:linear-gradient(90deg,#059eaf,#2df3ca);box-shadow:0 0 12px #1eead2;
+      animation:slide 1.4s ease-in-out infinite alternate; }
+    @keyframes slide {from{transform:translateX(-105%)}to{transform:translateX(340%)}}
+    #qtstatus {margin:19px 0 20px;min-height:30px;font-size:11px;line-height:1.5;color:#9ab2c3}
+    .credit {border-top:1px solid #1c3543;padding-top:15px;color:#7299ad;font-size:9px;letter-spacing:.09em;}
+    .loading-note { position:fixed;left:50%;bottom:20px;transform:translateX(-50%);
+      color:#536c7c;font-size:10px;white-space:nowrap;text-align:center;max-width:98vw; }
+    button { cursor:pointer;color:#07131b;border:0;border-radius:3px;padding:9px 18px;
+      background:#29dae2;font:700 11px ui-monospace,monospace; }
+    #retry {display:none;margin:0 auto 16px}
+    @media (max-width:500px){ #qtspinner{padding:26px 19px 20px}h1{font-size:29px}.loading-note{font-size:8px} }
+    @media (prefers-reduced-motion:reduce){ .meter:after{animation:none;width:100%;transform:none} }
+  </style>
+</head>
+<body>
+  <section id="qtspinner" aria-live="polite">
+    <div class="glyph" aria-hidden="true">◈</div>
+    <h1>HELIOS</h1>
+    <div class="subtitle">ENERGY MANAGEMENT // QT WEBASSEMBLY</div>
+    <div class="meter" id="meter"></div>
+    <div id="qtstatus">INITIALIZING QML + C++ SIMULATOR</div>
+    <button id="retry" type="button" onclick="location.reload()">RETRY LAUNCH</button>
+    <div class="credit">DESIGNED &amp; DEVELOPED BY SANDEEP PARIYAR</div>
+  </section>
+  <div id="screen"></div>
+  <div class="loading-note" id="webnote">ACTUAL QT 6 • QML • C++ • WEBASSEMBLY</div>
+  <script src="Helios.js"></script>
+  <script src="qtloader.js"></script>
+  <script>
+  (() => {
+    const spinner = document.getElementById('qtspinner');
+    const screen = document.getElementById('screen');
+    const status = document.getElementById('qtstatus');
+    const retry = document.getElementById('retry');
+    const note = document.getElementById('webnote');
+    const meter = document.getElementById('meter');
+    let loaded = false;
+    const fit = () => {
+      const scale = Math.min(1.8, (innerWidth - 32) / 840, (innerHeight - 32) / 520);
+      document.documentElement.style.setProperty('--fit', Math.max(.2, scale).toFixed(4));
+    };
+    addEventListener('resize', fit);
+    fit();
+    const fail = message => {
+      screen.style.display = 'none';
+      spinner.style.display = 'block';
+      status.textContent = message;
+      retry.style.display = 'block';
+      meter.style.display = 'none';
+      note.textContent = 'CHECK THE BROWSER CONSOLE FOR QT RUNTIME DETAILS';
+    };
+    // The module may take several seconds on first load; never report success merely
+    // because WASM was downloaded. Qt must create the QML root successfully.
+    qtLoad({
+      qt: {
+        onLoaded: () => {
+          loaded = true;
+          spinner.style.display = 'none';
+          screen.style.display = 'block';
+          note.style.display = 'none';
+          fit();
+        },
+        onExit: exitData => {
+          fail('THE QT APPLICATION EXITED' +
+            (exitData.code !== undefined ? ' (CODE ' + exitData.code + ')' : '') +
+            (exitData.text ? ' — ' + exitData.text : ''));
+        },
+        entryFunction: window.Helios_entry,
+        containerElements: [screen]
+      }
+    }).catch(error => {
+      console.error('HELIOS WebAssembly loader failed:', error);
+      fail('LOADER ERROR — ' + (error.message || String(error)));
+    });
+    setTimeout(() => {
+      if (!loaded && retry.style.display !== 'block') {
+        status.textContent = 'STILL LOADING QT WEBASSEMBLY — FIRST VISIT MAY TAKE LONGER';
+      }
+    }, 10000);
+  })();
+  </script>
+</body>
+</html>
