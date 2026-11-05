@@ -17,11 +17,20 @@
   <script>
     (() => {
       // Same-origin audio bridge, avoiding any changes to native Qt/C++ sound code.
-      // AudioContext is unlocked in the parent by the ENABLE SOUND button.
+      // The parent unlocks audio automatically on the first user gesture.
       Object.defineProperty(window, 'heliosAudio', {
         configurable: false,
         get() { try { return window.parent.heliosAudio; } catch (_) { return undefined; } }
       });
+      // Pointer events inside the Qt iframe do not bubble into the parent.
+      // Capture trusted interactions here and resume the parent's AudioContext
+      // synchronously so the actual first QML button can make its sound.
+      const unlockParentAudio = () => {
+        try { window.parent.heliosAudio?.unlockFromGesture?.(); }
+        catch (e) { console.warn('HELIOS_AUDIO_UNLOCK:', e); }
+      };
+      window.addEventListener('pointerdown', unlockParentAudio, {capture:true});
+      window.addEventListener('keydown', unlockParentAudio, {capture:true});
       const report = (type, detail) => {
         try { window.parent.postMessage({type, detail}, location.origin); } catch (error) {
           console.error('HELIOS_STATUS_BRIDGE_ERROR', error);

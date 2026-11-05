@@ -76,28 +76,50 @@ const { chromium } = require('playwright-core');
         viewportCheck.deviceCenterError > 4) {
       errors.push('HELIOS viewport is not visibly displayed: '+JSON.stringify(viewportCheck));
     }
-    // Browser autoplay policies require a user click. Unlock the 3 original
-    // WAV effects and verify a real QML mode button triggers C++ -> Web Audio.
-    await page.locator('#audioToggle').click();
-    await page.waitForFunction(() => window.heliosAudio?.enabled === true &&
-      window.heliosAudio?.buffers?.length === 3, null, {timeout: 10000})
-      .catch(error => errors.push('Web Audio failed to unlock/load: ' + error.message));
+    // Sound starts logically ON without a big floating control.
+    // The FIRST actual Qt ECO click must unlock audio through the iframe and
+    // propagate a C++ confirmation to the parent Web Audio engine.
+    const initialSound = await page.evaluate(() => ({
+      muted: window.heliosAudio?.muted,
+      ready: window.heliosAudio?.enabled,
+      buttonInsideDevice: document.querySelector('#device')?.contains(
+        document.querySelector('#audioToggle')),
+      buttonFixed: getComputedStyle(document.querySelector('#audioToggle')).position === 'fixed',
+      legacyHelpExists: !!document.querySelector('#audioHelp')
+    }));
+    if (initialSound.muted || !initialSound.buttonInsideDevice ||
+        initialSound.buttonFixed || initialSound.legacyHelpExists)
+      errors.push('Audio UI is not integrated into MCU bezel: ' + JSON.stringify(initialSound));
     const soundBefore = await page.evaluate(() => window.heliosAudio?.playCalls || 0);
     const qmlClick = await page.evaluate(() => {
       const nativeScreen = document.querySelector('#qtFrame').getBoundingClientRect();
-      // Map the known ECO button at native 840x520 coordinates into
-      // the aperture after browser and hardware-stage scaling.
       return {x:nativeScreen.x + 455 * nativeScreen.width / 840,
               y:nativeScreen.y + 43 * nativeScreen.height / 520};
     });
     await page.mouse.click(qmlClick.x, qmlClick.y);
-    await page.waitForTimeout(400);
-    const soundAfter = await page.evaluate(() => window.heliosAudio?.playCalls || 0);
-    console.log('HELIOS audio test:', JSON.stringify({soundBefore, soundAfter}));
-    if (soundAfter <= soundBefore) errors.push('Qt QML click did not invoke the Web Audio bridge');
+    await page.waitForFunction(() => window.heliosAudio?.enabled === true &&
+      window.heliosAudio?.buffers?.length === 3 &&
+      window.heliosAudio?.playCalls > 0, null, {timeout: 12000})
+      .catch(error => errors.push('First Qt click failed to unlock/play browser audio: ' + error.message));
+    const afterClick = await page.evaluate(() => ({
+      muted: window.heliosAudio?.muted,
+      enabled: window.heliosAudio?.enabled,
+      playCalls: window.heliosAudio?.playCalls || 0,
+      sounds: window.heliosAudio?.playedSounds || 0
+    }));
+    if (afterClick.playCalls <= soundBefore || !afterClick.enabled)
+      errors.push('QML click did not invoke automatically unlocked Web Audio bridge');
+    const button = page.locator('#audioToggle');
+    await button.click();
+    const mutedState = await page.evaluate(() => window.heliosAudio?.muted);
+    await button.click();
+    const unmutedState = await page.evaluate(() => !window.heliosAudio?.muted);
+    if (!mutedState || !unmutedState)
+      errors.push('Integrated bezel speaker mute/unmute toggle failed');
+    console.log('HELIOS audio test:', JSON.stringify({initialSound,afterClick,mutedState,unmutedState}));
     await page.screenshot({ path: 'wasm-smoke.png', fullPage: true }).catch(() => {});
     console.log('HELIOS smoke result:', JSON.stringify({ ready, exited, viewportCheck, errors: errors.slice(-30), title: await page.title(), canvasCount: frameCanvasCount }));
-    if (!ready || exited || errors.some(x => x.includes('HELIOS_STARTUP_FAILED') || x.includes('HELIOS viewport') || x.includes('Web Audio') || x.includes('QML click'))) process.exitCode = 1;
+    if (!ready || exited || errors.some(x => x.includes('HELIOS_STARTUP_FAILED') || x.includes('HELIOS viewport') || x.includes('Web Audio') || x.includes('QML click') || x.includes('Audio UI') || x.includes('bezel speaker') || x.includes('browser audio'))) process.exitCode = 1;
   } finally {
     await browser.close();
   }
