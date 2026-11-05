@@ -47,7 +47,9 @@ The source project is designed to stay lightweight. **Pre-Qt PNG optimization is
 
 ## WebAssembly
 
-A native **Qt WebAssembly** browser build is a planned enhancement. GitHub Pages hosting is **not live yet**; a desktop Qt build is the current implementation. ## Licensing
+A native **Qt WebAssembly** browser build is a planned enhancement. GitHub Pages hosting is **not live yet**; a desktop Qt build is the current implementation.
+
+## Licensing
 
 Original HELIOS code is licensed under **MIT** (see [LICENSE](LICENSE)). Qt and the free fonts used by the application have their own licenses. Open-Meteo data/API usage is subject to Open-Meteo terms.
 
