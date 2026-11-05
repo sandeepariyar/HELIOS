@@ -38,9 +38,34 @@ const { chromium } = require('playwright-core');
       }
       await page.waitForTimeout(1000);
     }
+    if (ready) {
+      await page.waitForFunction(() => {
+        const s = document.querySelector('#screen');
+        return s && getComputedStyle(s).display !== 'none';
+      }, null, { timeout: 15000 }).catch(error => {
+        errors.push('Qt loaded, but the QML display was not revealed: ' + error.message);
+      });
+    }
+    const viewportCheck = await page.evaluate(() => {
+      const canvas = document.querySelector('canvas');
+      const screen = document.querySelector('#screen');
+      const spinner = document.querySelector('#qtspinner');
+      const rect = screen?.getBoundingClientRect();
+      return {
+        canvasPresent: !!canvas,
+        screenVisible: !!screen && getComputedStyle(screen).display !== 'none',
+        spinnerHidden: !!spinner && getComputedStyle(spinner).display === 'none',
+        shownWidth: Math.round(rect?.width || 0),
+        shownHeight: Math.round(rect?.height || 0)
+      };
+    });
+    if (!viewportCheck.canvasPresent || !viewportCheck.screenVisible ||
+        !viewportCheck.spinnerHidden || viewportCheck.shownWidth < 600) {
+      errors.push('HELIOS viewport is not visibly displayed: ' + JSON.stringify(viewportCheck));
+    }
     await page.screenshot({ path: 'wasm-smoke.png', fullPage: true }).catch(() => {});
-    console.log('HELIOS smoke result:', JSON.stringify({ ready, exited, errors: errors.slice(-30), title: await page.title(), canvasCount: await page.locator('canvas').count() }));
-    if (!ready || exited || errors.some(x => x.includes('HELIOS_STARTUP_FAILED'))) process.exitCode = 1;
+    console.log('HELIOS smoke result:', JSON.stringify({ ready, exited, viewportCheck, errors: errors.slice(-30), title: await page.title(), canvasCount: await page.locator('canvas').count() }));
+    if (!ready || exited || errors.some(x => x.includes('HELIOS_STARTUP_FAILED') || x.includes('HELIOS viewport'))) process.exitCode = 1;
   } finally {
     await browser.close();
   }
