@@ -8,6 +8,10 @@ if(NOT EMSCRIPTEN)
     find_package(Qt6 QUIET COMPONENTS Multimedia)
 endif()
 qt_standard_project_setup()
+# QML must be installed under :/qt/qml/ for loadFromModule() on static/WebAssembly Qt.
+# Without this, Qt can compile the app but fail at runtime with
+# "Module \"Helios\" contains no type named \"Main\"".
+qt_policy(SET QTP0001 NEW)
 
 option(HELIOS_FETCH_FONTS "Fetch freely licensed OFL fonts if not present" ON)
 if(HELIOS_FETCH_FONTS)
