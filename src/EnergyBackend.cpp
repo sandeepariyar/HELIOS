@@ -132,7 +132,9 @@ void EnergyBackend::refreshWeather(){
     query.addQueryItem("timezone","UTC");
     url.setQuery(query);
     QNetworkRequest request(url);
-    request.setRawHeader("User-Agent","HELIOS-Qt6-Portfolio/0.2 (Open-Meteo weather demo)");
+#ifndef Q_OS_WASM
+    request.setRawHeader("User-Agent","HELIOS-Qt6-Portfolio/0.3 (Open-Meteo weather demo)");
+#endif
     QNetworkReply *reply=m_network.get(request);
     auto *timeout=new QTimer(reply);timeout->setSingleShot(true);
     connect(timeout,&QTimer::timeout,reply,[reply](){ if(reply->isRunning())reply->abort();});
