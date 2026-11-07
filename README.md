@@ -4,7 +4,7 @@
 ### Embedded Energy Management Cockpit
 **A Figma-designed, Qt 6 / QML / C++ HMI simulator — running live in your browser with WebAssembly.**
 
-[![LAUNCH LIVE DEMO](https://img.shields.io/badge/%E2%96%B6%20LAUNCH%20LIVE%20DEMO-08AFC4?style=for-the-badge&logo=qt&logoColor=white)](https://sandeepariyar.github.io/HELIOS/)
+[![LAUNCH LIVE DEMO](https://img.shields.io/badge/%E2%96%B6%20LAUNCH%20LIVE%20DEMO-08AFC4?style=for-the-badge&logo=qt&logoColor=white)](https://sandeepariyar.github.io/HELIOS-MCU/)
 [![EXPLORE QML](https://img.shields.io/badge/EXPLORE%20QML-172537?style=for-the-badge&logo=qt&logoColor=white)](https://github.com/sandeepariyar/HELIOS/tree/main/qml)
 [![VIEW C++ SOURCE](https://img.shields.io/badge/VIEW%20C%2B%2B%20SOURCE-172537?style=for-the-badge&logo=cplusplus&logoColor=white)](https://github.com/sandeepariyar/HELIOS/tree/main/src)
 
@@ -14,7 +14,7 @@
 
 HELIOS is a portfolio-grade, **MCU-inspired energy-management HMI**, designed in Figma and implemented as a fully interactive **Qt Quick / QML + C++** simulator. The same native application runs on desktop and through **Qt WebAssembly** inside a browser-based MCU touchscreen enclosure.
 
-**Try the real application:** **[▶ LAUNCH HELIOS LIVE](https://sandeepariyar.github.io/HELIOS/)** — no installation required. For browser audio, press **ENABLE SOUND** after opening the demo.
+**Try the real application:** **[▶ LAUNCH HELIOS LIVE](https://sandeepariyar.github.io/HELIOS-MCU/)** — no installation required. For browser audio, press **ENABLE SOUND** after opening the demo.
 
 **Technologies:** `Qt 6` · `Qt Quick` · `QML` · `C++17` · `CMake` · `WebAssembly` · `Emscripten` · `Figma` · `HMI` · `Optimized raster UI` · `Open-Meteo`
 
